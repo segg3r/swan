@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+project.version = '0.1'
+
+task fatJar(type: Jar) {
+	baseName = project.name + '-all'
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+	manifest {
+		attributes 'Implementation-Title': 'Gradle Quickstart', 'Implementation-Version': project.version
+		attributes 'Main-Class': 'Runner'
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'com.google.inject:guice:3.0'
+	compile 'org.glassfish.jersey.core:jersey-server:2.22.1'
+	compile 'org.glassfish.jersey.containers:jersey-container-jetty-http:2.22.1'
+
+	runtime group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.22.1'
+
+	compileOnly 'org.projectlombok:lombok:1.16.16'
+}
